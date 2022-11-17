@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container1 {
+        width: 100vw;
+        height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: lightcoral;
+      }
+      .container2 {
+        margin-top: 60px;
+        /* border: 1px solid red; */
+        width: 100vw;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .content1 {
+        padding: 10px;
+      }
+      .content2 {
+        width: 900px;
+        height: auto;
+        border: 1px solid green;
+      }
+      .one {
+        margin: 10px;
+        font-size: 20px;
+        border-radius: 4px;
+      }
+      #sub {
+        margin-top: 20px;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      #clearD {
+        font-size: 20px;
+      }
+      #result {
+        font-weight: bold;
+      }
+      .nj {
+        display: flex;
+        justify-content: space-between;
+        background-color: skyblue;
+        margin: 10px;
+      }
+      .heads {
+        display: flex;
+        justify-content: space-between;
+        background-color: tomato;
+      }
+      .nishuda {
+
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container1">
+      <div class="content1">
+        Enter Player Name: <input type="text" class="one" id="pname" /><br />
+        Enter age:<input type="number" class="one" id="page" min="1" max="60" /><br />
+        Select Player type<select name="playerType" class="one" id="ptype">
+          <option value="Batsman">Batsman</option>
+          <option value="Bowler">Bowler</option>
+          <option value="AllRounder">AllRounder</option>
+          </select
+          
+        ><br />
+        <button onclick="sendInfo()" id="sub">submit</button>
+        <button onclick="clearPlayer()" id="clearD">clearAllData</button>
+      </div>
+    </div>
+    <div class="container2">
+      <div class="content2">
+        <div class="heads">
+          <p>playerName</p>
+          <p>playerAge</p>
+          <p>playerType</p>
+        </div>
+        <h2 id="nk">There is no data available</h2>
+        <div id="result"></div>
+      </div>
+    </div>
+    <script>
+      var checkLocal = JSON.parse(localStorage.getItem("cricketList"));
+      var mainResult = document.getElementById("result");
+      var vc = 0;
+      if (checkLocal == null) {
+        var check1 = document.getElementById("result");
+        check1.innerHTML = "No players are added";
+      }
+      function sendInfo() {
+        var playername = document.getElementById("pname").value;
+        var playerage = document.getElementById("page").value;
+        var playertype = document.getElementById("ptype").value;
+        var cricketObject = {
+          playerName: playername,
+          playerAge: playerage,
+          playerType: playertype,
+        };
+
+        if (cricketObject.playerName.trim() == "") {
+
+            alert("please fill the player name first")
+
+        }
+        
+        else if(cricketObject.playerAge == "") {
+
+            alert("please fill the age")
+
+        }
+
+        else if(cricketObject.playerAge>60) {
+
+            alert("please enter the age under 60")
+        }
+
+        else {
+          var checkLocal = JSON.parse(localStorage.getItem("cricketList"));
+          var check11 = false;
+          if (checkLocal == null) {
+            cricketArray = [];
+          } else {
+            cricketArray = checkLocal;
+
+            vc = cricketArray.length;
+
+            cricketArray.forEach((element) => {
+              if (element.playerName == cricketObject.playerName) {
+                check11 = true;
+                alert("dont try to add same player name");
+                document.getElementById("pname").value = "";
+                document.getElementById("page").value = "";
+              }
+            });
+          }
+          if (check11 == false) {
+            if (vc < 11) {
+              cricketArray.push(cricketObject);
+              localStorage.setItem("cricketList", JSON.stringify(cricketArray));
+              document.getElementById("pname").value = "";
+              document.getElementById("page").value = "";
+              display();
+            } else {
+              alert("you cant add more than 11 players");
+            }
+          }
+
+          document.getElementById("nk").style.display = "none";
+
+        }
+      }
+      function display() {
+        var output = "";
+        var localData = JSON.parse(localStorage.getItem("cricketList"));
+        if (localData == null) {
+          array1 = [];
+        } else {
+          array1 = localData;
+          document.getElementById("nk").style.display = "none";
+        }
+        array1.forEach((element, index) => {
+          output += `
+            <div class="nj">
+            <p class="nishuda">${element.playerName}</p>
+            <p>${element.playerAge}</p>
+            <p>${element.playerType}</p>
+            </div>
+            `;
+        });
+        mainResult.innerHTML = output;
+      }
+      function clearPlayer() {
+        localStorage.clear();
+        document.getElementById("pname").value = "";
+        document.getElementById("page").value = "";
+        count = 0;
+        document.getElementById("nk").style.display = "block";
+        display();
+      }
+      document.getElementById("pname").value = "";
+      document.getElementById("page").value = "";
+      display();
+    </script>
+  </body>
+</html>
+
+
+
+
